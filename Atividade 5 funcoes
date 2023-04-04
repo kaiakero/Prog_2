@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <math.h>
+
+void tabuada_input(){
+  int num = 11,cont = 0, res = 0, entrou = 0; 
+    while (num > 10 || num < 0) {
+      printf("informe um valor de 0 a 10 que voce deseja a tabuada: ");
+      scanf("%d", &num);
+      while (cont < 10 && (num < 10 && num > 0)) {
+        cont++;
+        res = num * cont;
+        printf("\n");
+        printf("%d x %d = %d", num, cont, res);
+        entrou = 1;
+      }
+    if (entrou)
+      printf("\n");
+    else
+      printf("o valor informado não esta entre ZERO e DEZ\n\n");
+  }
+}
+void tabuada_1_ao_10(int i, int x, int MatrizTabuada[10][10]){
+    for (i = 1; i <= 10; i++) {
+      for (x = 1; x <= 10; x++) {
+        int resultado = i * x;
+        MatrizTabuada[i][x] = resultado;
+        printf("%d  ", resultado);
+      }
+      printf("\n");
+  }
+  printf("\n\n");
+  
+}
+void exibe_matriz(int i,int j,int A[3][3],char letra[1]){
+  printf("Matriz resultante %s:\n", letra);
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 3; j++) {
+      printf("%d ", A[i][j]);
+    }
+    printf("\n");
+  }
+}
+void preenche_matriz(int i,int j,int A[3][3],char letra[1]){
+  printf("Preencha a matriz %s:\n", letra);
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 3; j++) {
+      printf("A[%d][%d]: ", i, j);
+      scanf("%d", &A[i][j]);
+    }
+  }
+  
+}
+
+int main() {
+  int i = 0, x = 0, j = 0, k = 0;
+  int MatrizTabuada[10][10];
+  int A[3][3], B[3][3], C[3][3];
+
+
+  tabuada_1_ao_10(i,x, MatrizTabuada);
+  tabuada_input();
+  
+  preenche_matriz(i, j, A, "A");
+  preenche_matriz(i, j, B, "B");
+  
+  exibe_matriz(i, j, A, "A");
+  exibe_matriz(i, j, B, "B");
+
+  return 0;
+}
