@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+
+int potencia(int a, int b){
+    return pow(a, b);
+}
+int multiplicacao(int a, int b){
+    return a * b;
+}
+int subtracao(int a, int b){
+    return a - b;
+}
+int soma(int a, int b){
+    return a + b;
+}
+float divisao(float a, float b){
+    return a / b;
+}
+int resto(int a, int b){
+    return a % b;
+}  
+
+
+int main(void) {
+  int v1 , v2 , resultado;
+  char resp[10], seletor[2];
+  do {
+    printf("informe o primeiro valor: \n");
+    scanf("%d", &v1);
+    printf("\n");
+    printf("informe o segundo valor: \n");
+    scanf("%d", &v2);
+    printf("\n");
+    printf("(1) Soma\n(2) Subtração\n(3) Multiplicação\n(4) Divisão\n(5) Resto de divisão\n(6) Potência");
+    printf("\n\n");
+    printf("Com base no indice acima, informe a operação que voce dejesa: \n");
+    scanf("%s", seletor);
+    printf("\n");
+
+  
+        switch (seletor[0]) {
+            case '1':
+                resultado = soma(v1, v2);
+                printf("Resultado: %d\n", resultado);
+                break;
+
+            case '2':
+                resultado = subtracao(v1, v2);
+                printf("Resultado: %d\n", resultado);
+                break;
+
+            case '3':
+                resultado = multiplicacao(v1, v2);
+                printf("Resultado: %d\n", resultado);
+                break;
+
+            case '4':
+                printf("Resultado: %.2f\n", divisao(v1, v2));
+                break;
+
+            case '5':
+                resultado = resto(v1, v2);
+                printf("Resultado: %d\n", resultado);
+                break;
+
+            case '6':
+                resultado = potencia(v1, v2);
+                printf("Resultado: %d\n", resultado);
+                break;
+
+            default:
+                printf("Opção não encontrada!\n");
+                break;
+        }
+    printf("Digite 'repetir' se deseja realizar mais alguma operação, se deseja encerrar digite 'sair': \n");
+    scanf("%s", resp);
+  } while (strcmp(resp, "sair") != 0);
+  return 0;
+}
