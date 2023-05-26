@@ -1,3 +1,4 @@
+// Luciano Kehl e Vitor Pinto
 #include <ctype.h>
 #include <math.h>
 #include <stdbool.h>
@@ -5,24 +6,85 @@
 #include <stdlib.h>
 #include <string.h>
 
-int converter(char *valor) {
-    char segundo = valor[strlen(valor)-1];
-    //char primeiro = valor[strlen(valor)-2];
-  
-    switch(segundo) {
-       case 'A':
-            return 1;
-        case 'B':
-            return 2;
-        case 'C':
-            return 3;
-        case 'D':
-            return 4;
-        default:
-            return 0;
-    }
-}
+int barcos = 0, acertos = 0, disparos = 0, ganhas1 = 0, ganhas2 = 0, naviosDestruidos1 = 0, naviosDestruidos2 = 0;
+bool acabou = false, continuar = false;
+char nome1[20];
+char nome2[20];
+char valoresJogadas[5];
+char mapa01[21][21], mapa02[21][21];
+char  Vcoluna1, Vdirecao1, 
+   Vcoluna2, Vdirecao2,
+ Vcoluna3, Vdirecao3, val1, val2, val3;
+int Vlinha1, Vlinha2, Vlinha3;
 
+int converter(coluna) {
+  switch (toupper(coluna)) {
+  case 'A':
+    coluna = 1;
+    break;
+  case 'B':
+    coluna = 2;
+    break;
+  case 'C':
+    coluna = 3;
+    break;
+  case 'D':
+    coluna = 4;
+    break;
+  case 'E':
+    coluna = 5;
+    break;
+  case 'F':
+    coluna = 6;
+    break;
+  case 'G':
+    coluna = 7;
+    break;
+  case 'H':
+    coluna = 8;
+    break;
+  case 'I':
+    coluna = 9;
+    break;
+  case 'J':
+    coluna = 10;
+    break;
+  case 'K':
+    coluna = 11;
+    break;
+  case 'L':
+    coluna = 12;
+    break;
+  case 'M':
+    coluna = 13;
+    break;
+  case 'N':
+    coluna = 14;
+    break;
+  case 'O':
+    coluna = 15;
+    break;
+  case 'P':
+    coluna = 16;
+    break;
+  case 'Q':
+    coluna = 17;
+    break;
+  case 'R':
+    coluna = 18;
+    break;
+  case 'S':
+    coluna = 19;
+    break;
+  case 'T':
+    coluna = 20;
+    break;
+  default:
+    printf("o valor %d esta incorreto \n", coluna);
+  }
+
+  return coluna;
+}
 void printMap(char map[21][21]) {
   printf("   A B C D E F G H I J K L M N O P Q R S T\n"); // Imprime o cabeçalho
                                                           // das colunas
@@ -39,71 +101,164 @@ void printMap(char map[21][21]) {
     printf("\n"); // Pula para a próxima linha
   }
 }
-
-bool leitura(char map[21][21]) {
-  int linha, coluna, i, cont;
-  char direcao;
-  // Entrada do usuario indicando a posição do navio
-  printf("informe a linha que deseja posicionar o navio: ");
-  scanf("%d", &linha);
-  printf("informe a coluna que deseja posicionar o navio: ");
-  scanf("%d", &coluna);
-
-  // Verifica se a direção informada pelo usuario esta correta
-  do {
-    getchar();
-    printf("informe 'V' se deseja o navio na vertical ou 'H' se deseja o navio "
-           "na horizontal:\n");
-    scanf("%c", &direcao);
-    printf("Valor de direção: %c\n", direcao);
-    direcao = toupper(direcao);
-  } while (direcao != 'V' && direcao != 'H');
-  // verifica se o navio ultrapassa ou nao o limite do mapa
-  if (direcao == 'V' && linha >= 16) {
-    printf("O navio ultrapassa o limite do mapa, escolha outra posicao\n");
-    return false;
-  }
-  if (direcao == 'H' && coluna >= 16) {
-    printf("O navio ultrapassa o limite do mapa, escolha outra posicao\n");
-    return false;
-  }
-  switch (direcao) {
-  case 'V':
-
-    for (i = linha; i < linha + 5; i++) {
-      // Verificando se ja exixtem barcos na posição escolhinda
-      if (map[i][coluna] == 'x') {
-        printf("ja existem barcos ocupando essa posicao:\n ");
-        int voltar = (i - linha);
-        for (int j = voltar; j >= linha; j--) {
-          map[j][coluna] = '-';
+void jogadas(char jogada[5]) {
+  char jogada1[5], jogada2[5], jogada3[5], colunaL, letra;
+  int linha, coluna;
+  val1 = strlen(jogada1);
+  val2 = strlen(jogada2);
+  val3 = strlen(jogada3);
+  if (val1 == 0) {
+        strcpy(jogada1, jogada);
+        //printf("A string 1 = %s\n", jogada1);
+        //strncpy(linha, jogada1, 1);
+        val1 = jogada1[1];
+        if (isalpha(val1)) { // é igual a uma letra
+          val2 = val1;
+          val1 = jogada1[0] - '0'; 
+          val3 = jogada1[2];
+        } else {
+          val1 = (jogada1[0] - '0') * 10 + (jogada1[1] - '0');
+          val2 = jogada1[2];
+          val3 = jogada1[3];
         }
-        return false;
-      }
-      map[i][coluna] = 'x';
-    }
-    break;
-  case 'H':
-
-    for (i = coluna; i < coluna + 5; i++) {
-      // Verificando se ja exixtem barcos na posição escolhinda
-      if (map[linha][i] == 'x') {
-        printf("ja existem barcos ocupando essa posicao:\n ");
-        int voltar = (i - coluna);
-        for (int j = voltar; j >= coluna; j--) {
-          map[linha][j] = '-';
+        Vlinha1 = val1;
+        Vcoluna1 = val2;
+        Vdirecao1 = val3;
+    } else if(val2 == 0){
+        strcpy(jogada2, jogada);
+        val1 = jogada2[1];
+        if (isalpha(val1)) { // é igual a uma letra
+          val2 = val1;
+          val1 = jogada2[0] - '0'; 
+          val3 = jogada2[2];
+        } else {
+          val1 = (jogada2[0] - '0') * 10 + (jogada2[1] - '0');
+          val2 = jogada2[2];
+          val3 = jogada2[3];
         }
-        return false;
-      }
-
-      map[linha][i] = 'x';
+        Vlinha2 = val1;
+        Vcoluna2 = val2;
+        Vdirecao2 = val3;
+    } else if(val3 == 0){
+        strcpy(jogada3, jogada);
+        val1 = jogada3[1];
+        if (isalpha(val1)) { // é igual a uma letra
+          val2 = val1;
+          val1 = jogada3[0] - '0'; 
+          val3 = jogada3[2];
+        } else {
+          val1 = (jogada3[0] - '0') * 10 + (jogada3[1] - '0');
+          val2 = jogada3[2];
+          val3 = jogada3[3];
+        }
+        Vlinha3 = val1;
+        Vcoluna3 = val2;
+        Vdirecao3 = val3;
     }
-    break;
-  default:
-    printf("Valor incompatível.\n");
-  }
+  
+  printf("val1: %d \n", val1);
+  printf("val2: %c \n", val2);
+  printf("val3: %c \n", val3);
+
 }
+bool leitura(char map[21][21]) {
+  int linha, coluna, i, cont, n = 0;
+  char direcao, ccoluna;
+  char valor[5];
+  int verificacao = 0;
+  // Entrada do usuario indicando a posição do navio
+  printf("escolha onde posicionar o navio: ");
+  // getchar();
+  scanf("%s", valor);
 
+  char second = valor[1];
+  if (!isalpha(second)) {
+    second = valor[2];
+    linha = (valor[0] - '0') * 10 + (valor[1] - '0');
+  } else {
+    linha = valor[0] - '0';
+  }
+   coluna = converter(second);
+   printf("Linha: %d\n", linha);
+   printf("Coluna: %d\n", coluna);
+  // Verifica se a direção informada pelo usuario esta correta
+  if(linha > 20 || coluna > 20){ 
+    system("clear");
+    printf("Informe um valor correspondete ao mapa!\n");
+  } else if(linha != 0 && coluna != 0){
+     verificacao = 1;
+  }
+  //getchar();
+  if(verificacao == 1){
+    do {
+      printf("informe 'V' se deseja o navio na vertical ou 'H' se deseja o navio "
+             "na horizontal:\n");
+      getchar();
+      scanf("%c", &direcao);
+      // printf("Valor de direção: %c\n", direcao);
+      direcao = toupper(direcao);
+    } while (direcao != 'V' && direcao != 'H');
+    // printf("passou do while de leitura\n");
+    // verifica se o navio ultrapassa ou nao o limite do mapa
+    if (direcao == 'V' && linha >= 17 || direcao == 'H' && coluna >= 17) {
+      printf("\n*************************************************************\n");
+      printf("O navio ultrapassa o limite do mapa, escolha "
+             "outra posicao\n");
+      printf("*************************************************************\n\n");
+      getchar();
+      return false;
+    }
+  
+    printf("Valor de direção: %c\n", direcao);
+    printf("Valor de direção: %d\n", coluna);
+  
+    switch (direcao) {
+    case 'V':
+  
+      for (i = linha; i < linha + 5; i++) {
+        // Verificando se ja exixtem barcos na posição escolhinda
+        if (map[i][coluna] == 'x') {
+          printf("ja existem barcos ocupando essa posicao:\n ");
+  
+          int voltar = (i - linha);
+          for (int j = voltar; j >= linha; j--) {
+            map[j][coluna] = '-';
+            barcos--;
+          }
+          return false;
+        }
+        map[i][coluna] = 'x';
+        barcos++;
+        
+      }
+      break;
+    case 'H':
+      // Verificando se ja exixtem barcos na posição escolhinda
+      for (i = coluna; i < coluna + 5; i++) {
+        if (map[linha][i] == 'x') {
+          printf("ja existem barcos ocupando essa posicao:\n");
+  
+          int voltar = (i - coluna);
+          for (int j = voltar; j >= coluna; j--) {
+            map[linha][j] = '-';
+            barcos--;
+          }
+          return false;
+        }
+        map[linha][i] = 'x';
+        barcos++;
+      }
+      break;
+    default:
+      printf("Valor incompatível.\n");
+    }
+    printf("Contagem de navios: %d \n", barcos);  
+  }
+  // CRIEI ESSA PARTE PARA GUARDAR OS VALORES QUE ELE ESCOLHEU
+  sprintf(valoresJogadas, "%d%c%c", linha, second, direcao);
+  jogadas(valoresJogadas);
+  //printf("escolha: %s\n", valoresJogadas);
+}
 void criacaoMap(char map[21][21]) {
   for (int i = 0; i < 21; i++) {
     for (int j = 1; j < 21; j++) {
@@ -111,79 +266,278 @@ void criacaoMap(char map[21][21]) {
     }
   }
 }
-
 void jogar(char map[21][21]) {
-  bool acabou = false;
-
-  int linha, coluna, acertos = 0, disparos = 0;
-  char mapa_acertos[21][21];
+  system("clear");
+  int verificacao = 0;
+  int linha, coluna, disparos = 0;
+  char mapa_acertos[21][21], ccoluna;
+  acertos = 0;
   criacaoMap(mapa_acertos);
-
+  char valor[5];
+  // system("clear");
   while (!acabou) {
     printMap(mapa_acertos);
-    printf("informe a linha em que deseaja relizar o disparo: ");
-    scanf("%d", &linha);
-    printf("informe a coluna em que deseaja relizar o disparo: ");
-    scanf("%d", &coluna);
-    disparos++;
-    system("clear");
-    printf("Ultimo disparo realizado:\n");
-    printf("linha: %d\n", linha);
-    printf("coluna: %d\n", coluna);
-    if (map[linha][coluna] == 'x') {
-      map[linha][coluna] = 'O';
-      mapa_acertos[linha][coluna] = 'O';
-      acertos++;
-      printf("voce acertou!\n");
-      printf("Contagem de acertos: %d\n", acertos);
-      printf("Contagem de disparos: %d\n", disparos);
+    printf("informe onde marcar: ");
+    scanf("%s", valor);
+    char second = valor[1];
+    if (!isalpha(second)) {
+      second = valor[2];
+      linha = (valor[0] - '0') * 10 + (valor[1] - '0');
     } else {
-      printf("voce errou!\n");
-      printf("Contagem de acertos: %d\n", acertos);
-      printf("Contagem de disparos: %d\n", disparos);
+      linha = valor[0] - '0';
     }
-    if (acertos == 15) {
-      system("clear");
-      printf("parabens, voce ganhou!\n");
-      printf("contagem de acertos: %d\n", acertos);
-      printf("contagem de disparos: %d\n", disparos);
-      acabou = true;
-    }
-    if (disparos == 30) {
-      system("clear");
-      printf("Voce perdeu, mais sorte na proxima\n");
-      printf("contagem de acertos: %d\n", acertos);
-      printf("contagem de disparos: %d\n", disparos);
-      acabou = true;
+    coluna = converter(second);
+    printf("Linha: %d\n", linha);
+    printf("Coluna: %d\n", coluna);
+     if(linha > 20 || coluna > 20){ 
+        system("clear");
+        printf("Informe um valor correspondete ao mapa!\n");
+      } else if(linha != 0 && coluna != 0){
+         verificacao = 1;
+         disparos++;  
+      }
+    
+    if(verificacao == 1){
+       printf("Ultimo disparo realizado: %s \n", valor);
+      /*printf("linha: %d\n", linha);
+      printf("coluna: %d\n", coluna);*/
+      if (map[linha][coluna] == 'x') {
+        map[linha][coluna] = 'O';
+        mapa_acertos[linha][coluna] = 'O';
+        acertos++;
+        printf("voce acertou!\n");
+        printf("Contagem de acertos: %d\n", acertos);
+        printf("Contagem de disparos: %d\n", disparos);
+        
+      } else {
+        printf("voce errou!\n");
+        printf("Contagem de acertos: %d\n", acertos);
+        printf("Contagem de disparos: %d\n", disparos);
+        mapa_acertos[linha][coluna] = 'X';
+      }
+      if (acertos == 15) {
+        system("clear");
+        printf("parabens, voce ganhou!\n");
+        printf("contagem de acertos: %d\n", acertos);
+        printf("contagem de disparos: %d\n", disparos);
+        acabou = true;
+      }
+      if (disparos == 30) {
+        system("clear");
+        printf("Voce perdeu, mais sorte na proxima\n");
+        printf("contagem de acertos: %d\n", acertos);
+        printf("contagem de disparos: %d\n", disparos);
+        acabou = true;
+      }
+      
     }
   }
 }
-
-int main(void) {
-
-  char mapa01[21][21];
-  char mapa02[21][21];
-  char *jogador01[15];
-  char *jogador02[15];
-
-  criacaoMap(mapa01);
-  printMap(mapa01);
-
-   printf("informe onde marcar: ");
-  scanf("%d", &coluna);
-  
-  /*while (leitura(mapa01) != false)
-    ;
-  printMap(mapa01);
-  while (leitura(mapa01) != false)
-    ;
-  printMap(mapa01);
-  while (leitura(mapa01) != false)
-    ;
-  printMap(mapa01);
+void limparValores() {
   system("clear");
-  printf("Comecando o jogo\n");
-  jogar(mapa01);
-   */
+  val1 = 0;
+  val2 = 0; 
+  val3 = 0;
+}
+void verificaBarcos() {
+  bool encontrou = false, barcoInteiro = true;
+  int coluna, linha;
+  for (int i = 0; i < 21; i++) {
+    for (int j = 1; j < 21; j++) {
+      if (mapa02[i][j] != '-'){
+          encontrou = true;
+      }
+    }
+  }
+  
+  linha = Vlinha1;
+  coluna = converter(Vcoluna1);
+  if(!encontrou){
+    // mapa01
+    //VERIFICA A PRIMEIRA JOGADA
+    if(toupper(Vdirecao1) == 'V'){
+       for (int i = linha; i < linha + 5; i++) {
+          if(mapa01[i][coluna] != 'O'){
+              barcoInteiro = false;
+          }
+       }
+    }else if(toupper(Vdirecao1) == 'H'){
+        for (int i = linha; i < linha + 5; i++) {
+            if(mapa01[linha][i] != 'O'){
+                barcoInteiro = false;
+            }
+         }
+    }
+    if(barcoInteiro){
+      naviosDestruidos1++;
+    }
+    barcoInteiro = true;
+    //VERIFICA A SEGUNDA JOGADA
+    linha = Vlinha2;
+    coluna = converter(Vcoluna2);
+    if(toupper(Vdirecao2) == 'V'){
+       for (int i = linha; i < linha + 5; i++) {
+          if(mapa01[i][coluna] != 'O'){
+              barcoInteiro = false;
+          }
+       }
+    }else if(toupper(Vdirecao2) == 'H'){
+        for (int i = linha; i < linha + 5; i++) {
+            if(mapa01[linha][i] != 'O'){
+                barcoInteiro = false;
+            }
+         }
+    }
+    if(barcoInteiro){
+      naviosDestruidos1++;
+    } 
+    barcoInteiro = true;
+    //VERIFICA A SEGUNDA JOGADA
+    linha = Vlinha3;
+    coluna = converter(Vcoluna3);
+    if(toupper(Vdirecao3) == 'V'){
+       for (int i = linha; i < linha + 5; i++) {
+          if(mapa01[i][coluna] != 'O'){
+              barcoInteiro = false;
+          }
+       }
+    }else if(toupper(Vdirecao3) == 'H'){
+        for (int i = linha; i < linha + 5; i++) {
+            if(mapa01[linha][i] != 'O'){
+                barcoInteiro = false;
+            }
+         }
+    }
+    if(barcoInteiro){
+      naviosDestruidos1++;
+    } 
+    printf("total de barcos destruidos: %d \n", naviosDestruidos1);
+  }else{
+    // mapa02
+    //VERIFICA A PRIMEIRA JOGADA
+    if(toupper(Vdirecao1) == 'V'){
+       for (int i = linha; i < linha + 5; i++) {
+          if(mapa02[i][coluna] != 'O'){
+              barcoInteiro = false;
+          }
+       }
+    }else if(toupper(Vdirecao1) == 'H'){
+        for (int i = linha; i < linha + 5; i++) {
+            if(mapa02[linha][i] != 'O'){
+                barcoInteiro = false;
+            }
+         }
+    }
+    if(barcoInteiro){
+      naviosDestruidos2++;
+    }
+    barcoInteiro = true;
+    //VERIFICA A SEGUNDA JOGADA
+    linha = Vlinha2;
+    coluna = converter(Vcoluna2);
+    if(toupper(Vdirecao2) == 'V'){
+       for (int i = linha; i < linha + 5; i++) {
+          if(mapa02[i][coluna] != 'O'){
+              barcoInteiro = false;
+          }
+       }
+    }else if(toupper(Vdirecao2) == 'H'){
+        for (int i = linha; i < linha + 5; i++) {
+            if(mapa02[linha][i] != 'O'){
+                barcoInteiro = false;
+            }
+         }
+    }
+    if(barcoInteiro){
+      naviosDestruidos2++;
+    } 
+    barcoInteiro = true;
+    //VERIFICA A SEGUNDA JOGADA
+    linha = Vlinha3;
+    coluna = converter(Vcoluna3);
+    if(toupper(Vdirecao3) == 'V'){
+       for (int i = linha; i < linha + 5; i++) {
+          if(mapa02[i][coluna] != 'O'){
+              barcoInteiro = false;
+          }
+       }
+    }else if(toupper(Vdirecao3) == 'H'){
+        for (int i = linha; i < linha + 5; i++) {
+            if(mapa02[linha][i] != 'O'){
+                barcoInteiro = false;
+            }
+         }
+    }
+    if(barcoInteiro){
+      naviosDestruidos2++;
+    } 
+    printf("total de barcos destruidos: %d \n", naviosDestruidos2);
+  }
+}
+int main(void) {
+  int acertos1=0, acertos2 =0;
+  char escolha[20];
+  
+  
+  
+  do {
+     printf("Informe o nome do jogador 1!\n");
+     scanf("%s", nome1);
+     printf("Informe o nome do jogador 2!\n");
+     scanf("%19s", nome2);
+    
+    criacaoMap(mapa01);
+    criacaoMap(mapa02);
+    do {
+      limparValores();
+      printMap(mapa01);
+      leitura(mapa01);
+    } while (barcos < 15);
+    jogar(mapa01);
+    verificaBarcos();
+    acertos1 = acertos;
+    
+  
+    do {
+      limparValores();
+      printMap(mapa02);
+      leitura(mapa02);
+    } while (barcos < 15);
+    jogar(mapa02);
+    acertos2 = acertos;
+
+    system("clear");
+    if (acertos1> acertos2){
+      printf("O jogador 1: %s venceu com %d pontos\n", nome1, acertos1);
+      ganhas1++;
+      printf("Quantidade de rodadas que %s venceu: %d\n",nome1, ganhas1);
+      printf("%s destruiu um total de  %d navios \n",nome1, naviosDestruidos1);
+      printf("%s acertou %d posicoes \n",nome1, acertos1);
+    }else if(acertos2<acertos1){
+      printf("O jogador 2: %s venceu com %d pontos\n", nome2, acertos2);
+      ganhas2++;
+      printf("Quantidade de rodadas que %s venceu: %d\n",nome2, ganhas2);
+      printf("%s destruiu um total de  %d navios \n",nome2, naviosDestruidos2);
+      printf("%s acertou %d posicoes \n",nome2, acertos2);
+    } else {
+      printf("Os jogadores tiveram o mesmo numero de acertos!\n");
+      printf("%d",acertos1);
+    }
+
+
+    
+
+
+    do {
+     printf("Digite 'continuar' para continar jogando ou 'sair' para encerrar: \n");
+     scanf("%s", escolha);
+     if (strcmp(escolha, "continuar") == 0) {
+          continuar = true;
+      } else if (strcmp(escolha, "sair") == 0) {
+          continuar = false;
+      }
+    } while (strcmp(escolha, "continuar") != 0 && strcmp(escolha, "sair") != 0);
+  } while (continuar == true);
+  
   return 0;
 }
