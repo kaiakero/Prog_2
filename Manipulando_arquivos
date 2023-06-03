@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define TAM_NOME 100
+
+void apresentar_conteudo_arquivo() {
+    FILE *arquivo = fopen("registros.txt", "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    char linha[100];
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        printf("%s", linha);
+    }
+
+    fclose(arquivo);
+}
+
+void apresentar_registro() {
+    int linha;
+    printf("Digite o número da linha do registro a ser apresentado: ");
+    scanf("%d", &linha);
+
+    FILE *arquivo = fopen("registros.txt", "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    char registro[100];
+    int contador = 1;
+    while (fgets(registro, sizeof(registro), arquivo) != NULL) {
+        if (contador == linha) {
+            char *nome = strtok(registro, ",\n");
+            char *idade = strtok(NULL, ",\n");
+
+            printf("Nome: %s\n", nome);
+            printf("Idade: %s anos\n", idade);
+            break;
+        }
+        contador++;
+    }
+
+    if (contador > linha) {
+        printf("Registro não encontrado.\n");
+    }
+
+    fclose(arquivo);
+}
+
+void cadastrar_registro() {
+    char nome[TAM_NOME];
+    int idade;
+
+    printf("Digite o nome: ");
+    scanf("%s", nome);
+
+    printf("Digite a idade: ");
+    scanf("%d", &idade);
+
+    FILE *arquivo = fopen("registros.txt", "a");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    fprintf(arquivo, "%s, %d\n", nome, idade);
+    fclose(arquivo);
+
+    printf("Registro cadastrado com sucesso.\n");
+}
+
+int main() {
+    int opcao;
+    do {
+        printf("\nDigite a opção desejada:\n");
+        printf("1 - Apresentar todo conteúdo do arquivo\n");
+        printf("2 - Apresentar conteúdo de um registro\n");
+        printf("3 - Cadastrar um registro\n");
+        printf("4 - Fechar o programa\n");
+        printf("> ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                apresentar_conteudo_arquivo();
+                break;
+            case 2:
+                apresentar_registro();
+                break;
+            case 3:
+                cadastrar_registro();
+                break;
+            case 4:
+                return 0;
+            default:
+                printf("Opção inválida. Digite novamente.\n");
+        }
+    } while (1);
+
+    return 0;
+}
