@@ -1,0 +1,37 @@
+#include <stdio.h>
+
+int buscaBinariaRecursiva(int vetor[], int valor, int esquerda, int direita, int *chamadas) {
+    if (esquerda > direita)
+        return -1;
+
+    int meio = esquerda + (direita - esquerda) / 2;
+
+    if (vetor[meio] == valor)
+        return meio;
+
+    if (vetor[meio] > valor)
+        return buscaBinariaRecursiva(vetor, valor, esquerda, meio - 1, chamadas);
+
+    return buscaBinariaRecursiva(vetor, valor, meio + 1, direita, chamadas);
+}
+
+int main() {
+    int vetor[] = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};
+    int tamanho = sizeof(vetor) / sizeof(vetor[0]);
+    int valorBuscado = 0;
+    printf("informe o valor que deseja buscar: ");
+    scanf("%d", &valorBuscado);
+    
+    int chamadasRecursivas = 0;
+
+    int indice = buscaBinariaRecursiva(vetor, valorBuscado, 0, tamanho - 1, &chamadasRecursivas);
+
+    if (indice != -1)
+        printf("O valor %d foi encontrado no índice %d.\n", valorBuscado, indice);
+    else
+        printf("O valor %d não foi encontrado no vetor.\n", valorBuscado);
+
+    printf("Quantidade de chamadas recursivas: %d\n", chamadasRecursivas);
+
+    return 0;
+}
