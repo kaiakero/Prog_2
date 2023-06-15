@@ -1,0 +1,161 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int matricula;
+    char nome[50];
+    float notaFinal;
+} Aluno;
+
+void cadastrarAluno(FILE* arquivo) {
+    Aluno aluno;
+
+    printf("Digite a matrícula do aluno: ");
+    scanf("%d", &aluno.matricula);
+
+    printf("Digite o nome do aluno: ");
+    scanf(" %[^\n]", aluno.nome);
+
+    printf("Digite a nota final do aluno: ");
+    scanf("%f", &aluno.notaFinal);
+
+    fseek(arquivo, 0, SEEK_END); // Posiciona o cursor no final do arquivo
+    fwrite(&aluno, sizeof(Aluno), 1, arquivo);
+
+    printf("Aluno cadastrado com sucesso!\n");
+
+    fclose(arquivo);
+    arquivo = fopen("alunos.bin", "ab+"); // Reabre o arquivo no modo "ab+"
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        exit(1);
+    }
+}
+
+void listarTodosAlunos(FILE* arquivo) {
+    rewind(arquivo);
+    Aluno aluno;
+
+    printf("----- Todos os Alunos -----\n");
+
+    while (fread(&aluno, sizeof(Aluno), 1, arquivo) == 1) {
+        printf("Matrícula: %d\n", aluno.matricula);
+        printf("Nome: %s\n", aluno.nome);
+        printf("Nota Final: %.2f\n", aluno.notaFinal);
+        printf("\n");
+    }
+}
+
+void listarAlunoPorMatricula(FILE* arquivo) {
+    int matricula;
+    Aluno aluno;
+    int encontrado = 0;
+
+    printf("Digite a matrícula do aluno: ");
+    scanf("%d", &matricula);
+    rewind(arquivo);
+    while (fread(&aluno, sizeof(Aluno), 1, arquivo) == 1) {
+        if (aluno.matricula == matricula) {
+            printf("----- Aluno Encontrado -----\n");
+            printf("Matrícula: %d\n", aluno.matricula);
+            printf("Nome: %s\n", aluno.nome);
+            printf("Nota Final: %.2f\n", aluno.notaFinal);
+            printf("\n");
+            encontrado = 1;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        printf("Aluno com a matrícula %d não encontrado!\n", matricula);
+    }
+}
+
+void calcularEstatisticas(FILE* arquivo) {
+    Aluno aluno;
+    int totalAlunos = 0;
+    float somaNotas = 0.0;
+    float mediaNotas;
+    float notaMaxima = 0.0;
+    float notaMinima = 10.0;
+    char nomeMaiorNota[50];
+    char nomeMenorNota[50];
+    rewind(arquivo);
+    while (fread(&aluno, sizeof(Aluno), 1, arquivo) == 1) {
+        totalAlunos++;
+        somaNotas += aluno.notaFinal;
+
+        if (aluno.notaFinal > notaMaxima) {
+            notaMaxima = aluno.notaFinal;
+            strcpy(nomeMaiorNota, aluno.nome);
+        }
+
+        if (aluno.notaFinal < notaMinima) {
+            notaMinima = aluno.notaFinal;
+            strcpy(nomeMenorNota, aluno.nome);
+        }
+    }
+
+    if (totalAlunos > 0) {
+        mediaNotas = somaNotas / totalAlunos;
+
+        printf("----- Estatísticas -----\n");
+        printf("Total de alunos: %d\n", totalAlunos);
+        printf("Média das notas: %.2f\n", mediaNotas);
+        printf("Aluno com a maior nota: %s\n", nomeMaiorNota);
+        printf("Aluno com a menor nota: %s\n", nomeMenorNota);
+    } else {
+        printf("Nenhum aluno cadastrado.\n");
+    }
+}
+void fecharPrograma(FILE* arquivo) {
+    fclose(arquivo);
+    printf("Programa encerrado.\n");
+    exit(0);
+}
+int main() {
+    FILE* arquivo;
+    int opcao;
+
+    arquivo = fopen("alunos.bin", "ab+");
+
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return 1;
+    }
+
+    do {
+        printf("\nDigite a opção desejada:\n");
+        printf("1 - Apresentar todo conteúdo do arquivo\n");
+        printf("2 - Apresentar conteúdo de um registro\n");
+        printf("3 - Cadastrar um registro\n");
+        printf("4 - Estatísticas\n");
+        printf("5 - Fechar o programa\n");
+        printf("Opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                listarTodosAlunos(arquivo);
+                break;
+            case 2:
+                listarAlunoPorMatricula(arquivo);
+                break;
+            case 3:
+                cadastrarAluno(arquivo);
+                break;
+            case 4:
+                calcularEstatisticas(arquivo);
+                break;
+            case 5:
+                fecharPrograma(arquivo);
+                break;
+            default:
+                printf("Opção inválida. Por favor, tente novamente.\n");
+                break;
+        }
+    } while (opcao != 5);
+
+    return 0;
+}
