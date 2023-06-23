@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void le_matriz(int linhas, int colunas, int **p) {
+  for (int i = 0; i < linhas; i++) {
+    p[i] = (int *)malloc(colunas * sizeof(int));
+    for (int j = 0; j < colunas; j++) {
+      printf("Informe o valor para linha %d, coluna %d: ", i + 1, j + 1);
+      scanf("%d", &p[i][j]);
+    }
+  }
+}
+
+void exibe_matriz(int linhas, int colunas, int **p) {
+  for (int i = 0; i < linhas; i++) {
+    printf(" | ");
+    for (int j = 0; j < colunas; j++) {
+      printf("%d", p[i][j]);
+      printf(" | ");
+    }
+    printf("\n");
+  }
+}
+
+void exibe_elementos_matriz(int linhas, int colunas, int **p) {
+  for (int i = 0; i < linhas; i++) {
+    for (int j = 0; j < colunas; j++) {
+      printf("Valor: %d, Endereço: %p\n", p[i][j], &p[i][j]);
+    }
+  }
+}
+
+void libera_matriz(int linhas, int **p) {
+  for (int i = 0; i < linhas; i++) {
+    free(p[i]);
+  }
+  free(p);
+}
+
+int main(void) {
+  int linhas, colunas;
+  int **p;
+  printf("Informe a quantidade de linhas da matriz: ");
+  scanf("%d", &linhas);
+  printf("Informe a quantidade de colunas da matriz: ");
+  scanf("%d", &colunas);
+  p = (int **)malloc(linhas * sizeof(int *));
+  le_matriz(linhas, colunas, p);
+
+  printf("\nElementos da matriz:\n");
+  exibe_matriz(linhas, colunas, p);
+
+  printf("\nValores e endereços de memória:\n");
+  exibe_elementos_matriz(linhas, colunas, p);
+
+  libera_matriz(linhas, p);
+
+  return 0;
+}
